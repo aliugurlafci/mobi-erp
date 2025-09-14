@@ -1,28 +1,36 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import { createBrowserRouter } from "react-router";
+import { createHashRouter, Link } from "react-router";
 import { RouterProvider } from "react-router/dom";
 
 import App from './modules/app.jsx';
-
+import { UrunFiyat } from './modules/urunler/index.jsx';
 
 const LoadInitialData = async () => {
-    setTimeout(() => {
-        return true;
-    }, 5000);
+  setTimeout(() => {
+    return true;
+  }, 5000);
 }
 
-const router = createBrowserRouter([
-    {
-      path: "/*",
-      element: <App />,
-      loader: LoadInitialData,
-      children: [
-        {index: true, element: <div>Dashboard 1</div>},
-        {index: 'dash', element: <div>Dashboard 2</div>}
-      ]    
-    },
-  ]);
+const ErrorBoundary = ( ) => (
+  <div>
+    <h1>Something went wrong!</h1>
+    <p>Please try again later.</p>
+  </div>
+);
+
+const router = createHashRouter([
+  {
+    path: "/",
+    Component: App,
+    loader: LoadInitialData,
+    errorElement: <ErrorBoundary />,
+    children: [
+      { index: true, Component: UrunFiyat },
+      { path: 'urun-fiyat', Component: UrunFiyat }
+    ],
+  },
+]);
 
 const root = createRoot(document.getElementById('root'));
 
