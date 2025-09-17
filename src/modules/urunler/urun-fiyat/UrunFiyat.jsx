@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Table, Dropdown, Tag, Row, Col, Divider } from 'antd';
+import { Layout, Table, Dropdown, Tag, Row, Col, Divider, Button } from 'antd';
 import { FileExcelOutlined, ReloadOutlined, FilePdfOutlined, UploadOutlined, PlusOutlined, EditOutlined, DeleteFilled } from '@ant-design/icons';
 import UrunFiyatGuncelle from "./UrunFiyatGuncelle.jsx";
 
@@ -104,6 +104,31 @@ export const UrunFiyat = () => {
     const [loading, setLoading] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
+    const onRefresh = () => {
+        setLoading(true);
+        setTimeout(() => {
+            setLoading(false);
+        }, 5000);
+    }
+    const onAddProduct = () => {
+        alert("Product add clicked");
+    }
+    const onDeleteProduct = () => {
+        console.log("Product delete clicked");
+    }
+    const onEditProduct = () => {
+        setOpenUpdateModal(prevState => !prevState);
+    }
+    const onUploadExcel = () => {
+        console.log("Export to excel clicked");
+    }
+    const onDownloadPdf = () => {
+        console.log("Export to pdf clicked");
+    }
+    const onDownloadExcel = () => {
+        console.log("Import from excel clicked");
+    }
+
     const actionButtonItems = [
         {
             key: 'a-1',
@@ -112,11 +137,6 @@ export const UrunFiyat = () => {
         },
         {
             key: 'a-2',
-            label: 'Ekle',
-            icon: <PlusOutlined />
-        },
-        {
-            key: 'a-3',
             label: <span style={{ color: 'red' }}>Sil</span>,
             icon: <DeleteFilled style={{ color: 'red' }} />
         }
@@ -136,12 +156,7 @@ export const UrunFiyat = () => {
             key: 'e-3',
             label: 'PDF olarak indir',
             icon: <FilePdfOutlined />
-        },
-        {
-            key: 'e-4',
-            label: 'Yenile',
-            icon: <ReloadOutlined />
-        },
+        }
     ];
     const onSelectChange = newSelectedRowKeys => {
         setSelectedRowKeys(newSelectedRowKeys);
@@ -149,29 +164,29 @@ export const UrunFiyat = () => {
     const rowSelection = {
         selectedRowKeys,
         onChange: onSelectChange,
-        type:'radio'
+        type: 'radio'
     };
     const MenuHeader = () => {
         const onExportMenuClick = ({ key }) => {
             console.log('Export menu clicked:', key);
-            if (key === 'e-4') {
-                setLoading(true);
-                setTimeout(() => {
-                    setLoading(false);
-                }, 5000);
+            if (key === 'e-1') {
+                onUploadExcel();
+            }
+            if( key === 'e-2') {
+                onDownloadExcel();
+            }
+            if (key === 'e-3') {
+                onDownloadPdf();
             }
         };
 
         const onActionMenuClick = ({ key }) => {
             switch (key) {
                 case 'a-1':
-                    setOpenUpdateModal(prevState => !prevState);
+                    onEditProduct();
                     break;
                 case 'a-2':
-                    console.log('Ekle clicked');
-                    break;
-                case 'a-3':
-                    console.log('Sil clicked');
+                    onDeleteProduct();
                     break;
                 default:
                     break;
@@ -198,20 +213,30 @@ export const UrunFiyat = () => {
 
         return (
             <>
-                <Row gutter={[8, 8]} style={{ flexGrow: 1 }} justify="start">
-                    <Col xxl={19} xl={18} lg={16} md={12} sm={14} xs={24}>
+                <Row gutter={[8, 8]} style={{ flexGrow: 1 }} justify="space-between">
+                    <Col xxl={16} xl={16} lg={14} md={12} sm={24} xs={24}>
                         <span className="table-header-text">Ürün Listesi</span>
                     </Col>
-                    <Col xxl={3} xl={3} lg={4} md={6} sm={8} xs={24} style={{ marginRight: '0px' }}>
-                        <Dropdown.Button menu={actionMenu} trigger={['hover']}>
-                            İşlemler
-                        </Dropdown.Button>
-                    </Col>
-                    <Col xxl={2} xl={2} lg={4} md={6} sm={24} xs={24}>
-                        <Dropdown.Button menu={exportMenu} trigger={['hover']}>
-                            Aktarım
-                        </Dropdown.Button>
-                    </Col>
+                    <Row gutter={[16, 16]} style={{ flexGrow: 1 }} justify="end">
+                        <Col>
+                            <Button type="default" icon={<ReloadOutlined />} onClick={()=>onRefresh()}></Button>
+                        </Col>
+                        <Col>
+                            <Button type="primary" icon={<PlusOutlined />} onClick={()=>onAddProduct()}>
+                                Yeni Ürün
+                            </Button>
+                        </Col>
+                        <Col>
+                            <Dropdown.Button menu={actionMenu} trigger={['hover']} block>
+                                İşlemler
+                            </Dropdown.Button>
+                        </Col>
+                        <Col>
+                            <Dropdown.Button menu={exportMenu} trigger={['hover']} block>
+                                Aktarım
+                            </Dropdown.Button>
+                        </Col>
+                    </Row>
                 </Row>
                 <Divider type="horizontal" size="small" />
             </>
