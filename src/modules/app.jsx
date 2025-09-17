@@ -64,12 +64,16 @@ export default function App() {
             document.querySelector('.demo-logo-vertical > p').classList.add('show');
         }
     }
+    const onAppExit = () =>{
+        window.confirm("Uygulamadan çıkmak istediğinize emin misiniz?") && window.close();
+    }
     const dropdownMenuItems = [
         {
             key: '1',
             label: "Çıkış Yap",
             icon: <LogoutOutlined />,
-            danger: true
+            danger: true,
+            onClick: () => onAppExit()
         },
     ];
     const dropdownMenu = { items: dropdownMenuItems }; 

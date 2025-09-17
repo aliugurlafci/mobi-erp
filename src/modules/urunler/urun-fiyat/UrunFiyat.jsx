@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, Table, Dropdown, Tag, Row, Col, Divider, Button } from 'antd';
-import { FileExcelOutlined, ReloadOutlined, FilePdfOutlined, UploadOutlined, PlusOutlined, EditOutlined, DeleteFilled } from '@ant-design/icons';
+import { FileExcelOutlined, ReloadOutlined, FilePdfOutlined, UploadOutlined, EditOutlined, DeleteFilled } from '@ant-design/icons';
 import UrunFiyatGuncelle from "./UrunFiyatGuncelle.jsx";
 
 const columns = [
@@ -100,23 +100,18 @@ const data = [
 
 
 export const UrunFiyat = () => {
-    const [selectedRowKeys, setSelectedRowKeys] = useState('');
+    const [selectedRowKey, setSelectedRowKey] = useState('');
     const [loading, setLoading] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
     const onRefresh = () => {
-        setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-        }, 5000);
-    }
-    const onAddProduct = () => {
-        alert("Product add clicked");
-    }
-    const onDeleteProduct = () => {
-        console.log("Product delete clicked");
+        setLoading(prevState => !prevState);
     }
     const onEditProduct = () => {
+        if (!selectedRowKey) {
+            alert("Lütfen fiyatını güncellemek istediğiniz ürünü seçiniz.");
+            return;
+        }
         setOpenUpdateModal(prevState => !prevState);
     }
     const onUploadExcel = () => {
@@ -129,18 +124,6 @@ export const UrunFiyat = () => {
         console.log("Import from excel clicked");
     }
 
-    const actionButtonItems = [
-        {
-            key: 'a-1',
-            label: 'Düzenle',
-            icon: <EditOutlined />
-        },
-        {
-            key: 'a-2',
-            label: <span style={{ color: 'red' }}>Sil</span>,
-            icon: <DeleteFilled style={{ color: 'red' }} />
-        }
-    ];
     const exportButtonItems = [
         {
             key: 'e-1',
@@ -158,11 +141,11 @@ export const UrunFiyat = () => {
             icon: <FilePdfOutlined />
         }
     ];
-    const onSelectChange = newSelectedRowKeys => {
-        setSelectedRowKeys(newSelectedRowKeys);
+    const onSelectChange = newSelectedRowKey => {
+        setSelectedRowKey(newSelectedRowKey);
     };
     const rowSelection = {
-        selectedRowKeys,
+        selectedRowKey,
         onChange: onSelectChange,
         type: 'radio'
     };
@@ -172,34 +155,12 @@ export const UrunFiyat = () => {
             if (key === 'e-1') {
                 onUploadExcel();
             }
-            if( key === 'e-2') {
+            if (key === 'e-2') {
                 onDownloadExcel();
             }
             if (key === 'e-3') {
                 onDownloadPdf();
             }
-        };
-
-        const onActionMenuClick = ({ key }) => {
-            switch (key) {
-                case 'a-1':
-                    onEditProduct();
-                    break;
-                case 'a-2':
-                    onDeleteProduct();
-                    break;
-                default:
-                    break;
-            }
-        };
-
-        const actionMenu = {
-            items: actionButtonItems.map(item => ({
-                key: item.key,
-                icon: item.icon,
-                label: item.label,
-                onClick: onActionMenuClick
-            }))
         };
 
         const exportMenu = {
@@ -219,17 +180,12 @@ export const UrunFiyat = () => {
                     </Col>
                     <Row gutter={[16, 16]} style={{ flexGrow: 1 }} justify="end">
                         <Col>
-                            <Button type="default" icon={<ReloadOutlined />} onClick={()=>onRefresh()}></Button>
+                            <Button type="default" icon={<ReloadOutlined />} onClick={() => onRefresh()}>Yenile</Button>
                         </Col>
                         <Col>
-                            <Button type="primary" icon={<PlusOutlined />} onClick={()=>onAddProduct()}>
-                                Yeni Ürün
+                            <Button type="primary" icon={<EditOutlined />} onClick={() => onEditProduct()}>
+                                Yeni Fiyat Belirle
                             </Button>
-                        </Col>
-                        <Col>
-                            <Dropdown.Button menu={actionMenu} trigger={['hover']} block>
-                                İşlemler
-                            </Dropdown.Button>
                         </Col>
                         <Col>
                             <Dropdown.Button menu={exportMenu} trigger={['hover']} block>
@@ -242,6 +198,14 @@ export const UrunFiyat = () => {
             </>
         );
     }
+
+    useEffect(() => {
+        if(loading){
+            setTimeout(() => {
+                setLoading(prevState => !prevState);
+            }, 5000);
+        }
+    },[loading]);
     return (
         <Layout>
             <Table
@@ -258,8 +222,8 @@ export const UrunFiyat = () => {
             <UrunFiyatGuncelle
                 open={openUpdateModal}
                 setOpen={setOpenUpdateModal}
-                data={data}
-                selectedData={data.filter(item => selectedRowKeys.includes(selectedRowKeys[0]))[0] || {}}
+                onFinish={onRefresh}
+                selectedData={data.filter(item => item.key == selectedRowKey)[0] || {}}
             />
         </Layout>
     );

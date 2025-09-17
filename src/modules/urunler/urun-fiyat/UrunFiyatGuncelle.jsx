@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
-import { Button, Modal, Input, Tooltip, Select, Space } from 'antd';
+import { Button, Modal, Input, Tooltip, Select, Space,Divider } from 'antd';
 import { LockOutlined, InfoCircleOutlined, UserOutlined } from '@ant-design/icons';
 
-const UrunFiyatGuncelle = ({ open, setOpen, data, selectedData }) => {
+const UrunFiyatGuncelle = ({ open, setOpen,selectedData,onFinish }) => {
     const [currency, setCurrency] = useState({ symbol: '₺', code: 'TRY' });
     const [loading, setLoading] = useState(false);
 
-    const showModal = () => {
-        setOpen(true);
-    };
     const handleOk = () => {
-        setLoading(true);
+        setLoading(prevState => !prevState);
         setTimeout(() => {
-            setLoading(false);
-            setOpen(false);
+            setLoading(prevState => !prevState);
+            setOpen(prevState => !prevState);
+            onFinish();
         }, 3000);
     };
     const handleCancel = () => {
-        setOpen(false);
+        setOpen(prevState => !prevState);
     };
 
     const handleCategoryChange = value => {
@@ -74,6 +72,7 @@ const UrunFiyatGuncelle = ({ open, setOpen, data, selectedData }) => {
                 </Button>,
             ]}
         >
+            <Divider type="horizontal" size="small" />
             <br/>
             <>
                 <Input
@@ -101,8 +100,8 @@ const UrunFiyatGuncelle = ({ open, setOpen, data, selectedData }) => {
                 <br />
                 <br />
                 <div className='space-between'>
-                    <span>Barkod Numarası: </span>
-                    <Input.OTP length={8} type='number' style={{ marginLeft: 20 }} defaultValue={selectedData.barkod} />
+                    <span>Barkod: </span>
+                    <Input.OTP length={12} type='number' style={{ marginLeft: 20 }} defaultValue={selectedData.barkod} />
                 </div>
                 <br />
                 <br />
@@ -128,6 +127,7 @@ const UrunFiyatGuncelle = ({ open, setOpen, data, selectedData }) => {
                 <br />
                 <br />
             </>
+            <Divider type="horizontal" size="small" />
         </Modal>
     );
 };
