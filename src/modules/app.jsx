@@ -93,7 +93,8 @@ export default function App() {
                 {
                     key: '2-1',
                     label: 'Yeni Ürün',
-                    icon: <AppstoreAddOutlined />
+                    icon: <AppstoreAddOutlined />,
+                    onClick: () => navigate('add-product')
                 },
                 {
                     key: '2-2',
@@ -104,7 +105,7 @@ export default function App() {
                     key: '2-3',
                     icon: <DollarOutlined />,
                     label: 'Ürün Fiyatları',
-                    onClick: () => navigate('urun-fiyat')
+                    onClick: () => navigate('product-prices')
                 },
             ]
         },
@@ -293,15 +294,19 @@ export default function App() {
     useEffect(() => {
         let pathname = "";
         let screenTitle = "";
-
+        console.log(location);
         switch (location.pathname) {
             case "/":
                 pathname = "MOBI CRM > Genel Bakış";
                 screenTitle = "Genel Bakış";
                 break;
-            case "/urun-fiyat":
+            case "/product-prices":
                 pathname = "MOBI CRM > Ürünler > Ürün Fiyatları";
                 screenTitle = "Ürün Fiyatları";
+                break;
+            case "/add-product":
+                pathname = "MOBI CRM > Ürünler > Yeni Ürün";
+                screenTitle = "Yeni Ürün";
                 break;
             default:
                 pathname = "MOBI CRM > Genel Bakış";

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Modal, Input, Tooltip, Select, Space,Divider } from 'antd';
-import { LockOutlined, InfoCircleOutlined, UserOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined, UserOutlined } from '@ant-design/icons';
 
-const UrunFiyatGuncelle = ({ open, setOpen,selectedData,onFinish }) => {
+const UpdateProductPrice = ({ open, setOpen,selectedData,onFinish }) => {
     const [currency, setCurrency] = useState({ symbol: '₺', code: 'TRY' });
     const [loading, setLoading] = useState(false);
 
@@ -131,4 +131,4 @@ const UrunFiyatGuncelle = ({ open, setOpen,selectedData,onFinish }) => {
         </Modal>
     );
 };
-export default UrunFiyatGuncelle;
+export default UpdateProductPrice;

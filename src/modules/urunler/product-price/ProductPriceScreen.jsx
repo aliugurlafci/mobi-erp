@@ -99,7 +99,7 @@ const data = [
 ];
 
 
-export const UrunFiyat = () => {
+export const ProductPriceScreen = () => {
     const [selectedRowKey, setSelectedRowKey] = useState('');
     const [loading, setLoading] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -176,7 +176,7 @@ export const UrunFiyat = () => {
             <>
                 <Row gutter={[8, 8]} style={{ flexGrow: 1 }} justify="space-between">
                     <Col xxl={16} xl={16} lg={14} md={12} sm={24} xs={24}>
-                        <span className="table-header-text">Ürün Listesi</span>
+                        <span className="table-header-text">Ürün Fiyat Listesi</span>
                     </Col>
                     <Row gutter={[16, 16]} style={{ flexGrow: 1 }} justify="end">
                         <Col>

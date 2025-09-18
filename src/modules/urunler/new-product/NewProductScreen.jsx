@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, Table, Dropdown, Tag, Row, Col, Divider, Button } from 'antd';
-import { FileExcelOutlined, ReloadOutlined, FilePdfOutlined, UploadOutlined, EditOutlined, DeleteFilled } from '@ant-design/icons';
-import UpdateProductPrice from "../urun-modals/UpdateProductPrice.jsx";
+import { FileExcelOutlined, ReloadOutlined, FilePdfOutlined, UploadOutlined,DeleteFilled, PlusOutlined } from '@ant-design/icons';
+import UrunFiyatGuncelle from "../urun-modals/UpdateProductPrice.jsx";
 
 const columns = [
     {
@@ -99,21 +99,29 @@ const data = [
 ];
 
 
-export const UrunFiyat = () => {
+export const NewProductScreen = () => {
     const [selectedRowKey, setSelectedRowKey] = useState('');
     const [loading, setLoading] = useState(false);
-    const [openUpdateModal, setOpenUpdateModal] = useState(false);
+    const [openAddModal, setOpenAddModal] = useState(false);
 
     const onRefresh = () => {
         setLoading(prevState => !prevState);
     }
-    const onEditProduct = () => {
+    const onAddProduct = () => {
         if (!selectedRowKey) {
             alert("Lütfen fiyatını güncellemek istediğiniz ürünü seçiniz.");
             return;
         }
         setOpenUpdateModal(prevState => !prevState);
     }
+    const onDeleteProduct = () => {
+        if (!selectedRowKey) {
+            alert("Lütfen silmek istediğiniz ürünü seçiniz.");
+            return;
+        }
+        alert("Seçili ürün silindi: " + selectedRowKey);
+        setSelectedRowKey('');
+     };
     const onUploadExcel = () => {
         console.log("Export to excel clicked");
     }
@@ -142,7 +150,11 @@ export const UrunFiyat = () => {
         }
     ];
     const onSelectChange = newSelectedRowKey => {
-        setSelectedRowKey(newSelectedRowKey);
+        if(selectedRowKey === newSelectedRowKey){
+            setSelectedRowKey('');
+        } else {
+            setSelectedRowKey(newSelectedRowKey);
+        }
     };
     const rowSelection = {
         selectedRowKey,
@@ -183,10 +195,17 @@ export const UrunFiyat = () => {
                             <Button type="default" icon={<ReloadOutlined />} onClick={() => onRefresh()}>Yenile</Button>
                         </Col>
                         <Col>
-                            <Button type="primary" icon={<EditOutlined />} onClick={() => onEditProduct()}>
-                                Yeni Fiyat Belirle
+                            <Button type="primary" icon={<PlusOutlined />} onClick={() => onAddProduct()}>
+                                Ürün Ekle
                             </Button>
                         </Col>
+                        {
+                            selectedRowKey ? <Col>
+                            <Button type="primary" danger icon={<DeleteFilled />} onClick={() => onDeleteProduct()}>
+                                Ürünü Sil
+                            </Button>
+                        </Col> : null
+                        }
                         <Col>
                             <Dropdown.Button menu={exportMenu} trigger={['hover']} block>
                                 Aktarım
@@ -203,6 +222,7 @@ export const UrunFiyat = () => {
         if(loading){
             setTimeout(() => {
                 setLoading(prevState => !prevState);
+                setSelectedRowKey('');
             }, 5000);
         }
     },[loading]);
@@ -217,11 +237,12 @@ export const UrunFiyat = () => {
                 expandable={{ defaultExpandAllRows: true }}
                 columns={columns}
                 dataSource={data}
+                rowHoverable
                 title={() => MenuHeader()}
             />
-            <UpdateProductPrice
-                open={openUpdateModal}
-                setOpen={setOpenUpdateModal}
+            <UrunFiyatGuncelle
+                open={openAddModal}
+                setOpen={setOpenAddModal}
                 onFinish={onRefresh}
                 selectedData={data.filter(item => item.key == selectedRowKey)[0] || {}}
             />

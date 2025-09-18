@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import { createHashRouter, Link } from "react-router";
+import { createHashRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
-
 import App from './modules/app.jsx';
-import { UrunFiyat } from './modules/urunler/index.jsx';
+import {NewProductScreen,ProductPriceScreen} from './modules/urunler/index.jsx';
 
 const LoadInitialData = async () => {
   setTimeout(() => {
@@ -26,8 +25,9 @@ const router = createHashRouter([
     loader: LoadInitialData,
     errorElement: <ErrorBoundary />,
     children: [
-      { index: true, Component: UrunFiyat },
-      { path: 'urun-fiyat', Component: UrunFiyat }
+      { index: true, Component:NewProductScreen},
+      { path: 'product-prices', Component:ProductPriceScreen},
+      { path: 'add-product', Component:NewProductScreen},
     ],
   },
 ]);

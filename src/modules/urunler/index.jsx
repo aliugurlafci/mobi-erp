@@ -1,5 +1,7 @@
-import {UrunFiyat} from './urun-fiyat/UrunFiyat.jsx';
+import { ProductPriceScreen } from './product-price/ProductPriceScreen.jsx';
+import { NewProductScreen } from './new-product/NewProductScreen.jsx';
 
 export {
-    UrunFiyat
+    NewProductScreen,
+    ProductPriceScreen
 }
