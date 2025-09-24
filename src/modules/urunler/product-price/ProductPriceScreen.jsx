@@ -145,7 +145,7 @@ export const ProductPriceScreen = () => {
         setSelectedRowKey(newSelectedRowKey);
     };
     const rowSelection = {
-        selectedRowKey,
+        selectedRowKeys:selectedRowKey,
         onChange: onSelectChange,
         type: 'radio'
     };
@@ -175,7 +175,7 @@ export const ProductPriceScreen = () => {
         return (
             <>
                 <Row gutter={[8, 8]} style={{ flexGrow: 1 }} justify="space-between">
-                    <Col xxl={16} xl={16} lg={14} md={12} sm={24} xs={24}>
+                    <Col xxl={12} xl={12} lg={12} md={12} sm={12} xs={24}>
                         <span className="table-header-text">Ürün Fiyat Listesi</span>
                     </Col>
                     <Row gutter={[16, 16]} style={{ flexGrow: 1 }} justify="end">

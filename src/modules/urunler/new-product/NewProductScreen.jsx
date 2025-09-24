@@ -7,18 +7,22 @@ const columns = [
     {
         title: 'Ürün Kodu',
         dataIndex: 'urunKodu',
+        sorter: (a, b) => a.urunKodu > b.urunKodu ? 1 : -1,
     },
     {
         title: 'Ürün Adı',
         dataIndex: 'urunAdi',
+        sorter: (a, b) => a.urunAdi > b.urunAdi ? 1 : -1,
     },
     {
         title: 'Barkod',
         dataIndex: 'barkod',
+        sorter: (a, b) => a.barkod > b.barkod ? 1 : -1,
     },
     {
         title: ' Fiyat',
         dataIndex: 'fiyat',
+        sorter: (a, b) => a.fiyat > b.fiyat ? 1 : -1,
     },
     {
         title: 'Birim',
@@ -27,6 +31,7 @@ const columns = [
     {
         title: 'Tarih',
         dataIndex: 'tarih',
+        sorter: (a, b) => a.tarih > b.tarih ? 1 : -1,
     },
     {
         title: 'Fiyat Giren',
@@ -48,7 +53,7 @@ const columns = [
                 }
             </>
         )
-    }
+    },
 ];
 
 const data = [
@@ -68,9 +73,9 @@ const data = [
         urunKodu: 'John Brown 2',
         urunAdi: 'Tencere 3\'lü Set',
         barkod: '11112222',
-        fiyat: '250.00',
+        fiyat: '300.00',
         birim: 'TRY',
-        tarih: '01.01.2024',
+        tarih: '08.01.2024',
         fiyatGiren: 'Ali Uğur Lafçı',
         kategoriler: ["Ev Aletleri"]
     },
@@ -79,9 +84,9 @@ const data = [
         urunKodu: 'John Brown 3',
         urunAdi: 'Tencere 3\'lü Set',
         barkod: '11112222',
-        fiyat: '250.00',
+        fiyat: '350.00',
         birim: 'TRY',
-        tarih: '01.01.2024',
+        tarih: '07.01.2024',
         fiyatGiren: 'Ali Uğur Lafçı',
         kategoriler: ["Ev Aletleri"]
     },
@@ -90,9 +95,9 @@ const data = [
         urunKodu: 'John Brown 4',
         urunAdi: 'Tencere 3\'lü Set',
         barkod: '11112222',
-        fiyat: '250.00',
+        fiyat: '450.00',
         birim: 'TRY',
-        tarih: '01.01.2024',
+        tarih: '06.01.2024',
         fiyatGiren: 'Ali Uğur Lafçı',
         kategoriler: ["Ev Aletleri"]
     },
@@ -149,17 +154,13 @@ export const NewProductScreen = () => {
             icon: <FilePdfOutlined />
         }
     ];
-    const onSelectChange = newSelectedRowKey => {
-        if(selectedRowKey === newSelectedRowKey){
-            setSelectedRowKey('');
-        } else {
-            setSelectedRowKey(newSelectedRowKey);
-        }
-    };
+    const onSelectChange = newSelectedRowKey => setSelectedRowKey(selectedRowKey === newSelectedRowKey ? '' : newSelectedRowKey);
+
     const rowSelection = {
-        selectedRowKey,
+        selectedRowKeys:selectedRowKey,
         onChange: onSelectChange,
-        type: 'radio'
+        type: 'radio',
+        selection:true
     };
     const MenuHeader = () => {
         const onExportMenuClick = ({ key }) => {
@@ -187,7 +188,7 @@ export const NewProductScreen = () => {
         return (
             <>
                 <Row gutter={[8, 8]} style={{ flexGrow: 1 }} justify="space-between">
-                    <Col xxl={16} xl={16} lg={14} md={12} sm={24} xs={24}>
+                    <Col xxl={1} xl={12} lg={12} md={12} sm={12} xs={24}>
                         <span className="table-header-text">Ürün Listesi</span>
                     </Col>
                     <Row gutter={[16, 16]} style={{ flexGrow: 1 }} justify="end">
@@ -223,7 +224,7 @@ export const NewProductScreen = () => {
             setTimeout(() => {
                 setLoading(prevState => !prevState);
                 setSelectedRowKey('');
-            }, 5000);
+            }, 1000);
         }
     },[loading]);
     return (
