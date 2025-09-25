@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Layout, Table, Dropdown, Tag, Row, Col, Divider, Button } from 'antd';
+import React,{ useEffect, useState } from 'react';
+import { Layout,Tag} from 'antd';
 import { FileExcelOutlined, ReloadOutlined, FilePdfOutlined, UploadOutlined,DeleteFilled, PlusOutlined } from '@ant-design/icons';
+import { MobiTable } from '../../components/MobiTable.js';
 import UrunFiyatGuncelle from "../urun-modals/UpdateProductPrice.jsx";
 
 const columns = [
@@ -105,27 +106,32 @@ const data = [
 
 
 export const NewProductScreen = () => {
-    const [selectedRowKey, setSelectedRowKey] = useState('');
+    const [tableData, setTableData] = useState(data);
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [loading, setLoading] = useState(false);
     const [openAddModal, setOpenAddModal] = useState(false);
 
     const onRefresh = () => {
         setLoading(prevState => !prevState);
+        setTableData(data);
     }
     const onAddProduct = () => {
-        if (!selectedRowKey) {
+        if (selectedRowKeys.length == 0) {
             alert("Lütfen fiyatını güncellemek istediğiniz ürünü seçiniz.");
             return;
         }
-        setOpenUpdateModal(prevState => !prevState);
+        setOpenAddModal(prevState => !prevState);
     }
     const onDeleteProduct = () => {
-        if (!selectedRowKey) {
+        if (selectedRowKeys.length == 0) {
             alert("Lütfen silmek istediğiniz ürünü seçiniz.");
             return;
         }
-        alert("Seçili ürün silindi: " + selectedRowKey);
-        setSelectedRowKey('');
+     
+        const newData = tableData.filter(item => !selectedRowKeys.includes(item.key));
+        setTableData(newData);
+
+        setSelectedRowKeys('');
      };
     const onUploadExcel = () => {
         console.log("Export to excel clicked");
@@ -137,115 +143,99 @@ export const NewProductScreen = () => {
         console.log("Import from excel clicked");
     }
 
-    const exportButtonItems = [
-        {
-            key: 'e-1',
-            label: 'Excel yükle',
-            icon: <UploadOutlined />
-        },
-        {
-            key: 'e-2',
-            label: 'Excel olarak indir',
-            icon: <FileExcelOutlined />
-        },
-        {
-            key: 'e-3',
-            label: 'PDF olarak indir',
-            icon: <FilePdfOutlined />
+    const onSelectChange = newSelectedRowKey => {
+        if(!selectedRowKeys.includes(newSelectedRowKey)){
+            selectedRowKeys.push(newSelectedRowKey);
         }
-    ];
-    const onSelectChange = newSelectedRowKey => setSelectedRowKey(selectedRowKey === newSelectedRowKey ? '' : newSelectedRowKey);
+    }
 
     const rowSelection = {
-        selectedRowKeys:selectedRowKey,
+        selectedRowKeys:selectedRowKeys,
         onChange: onSelectChange,
-        type: 'radio',
+        type: 'checkbox',
         selection:true
     };
-    const MenuHeader = () => {
-        const onExportMenuClick = ({ key }) => {
-            console.log('Export menu clicked:', key);
-            if (key === 'e-1') {
-                onUploadExcel();
-            }
-            if (key === 'e-2') {
-                onDownloadExcel();
-            }
-            if (key === 'e-3') {
-                onDownloadPdf();
-            }
-        };
-
-        const exportMenu = {
-            items: exportButtonItems.map(item => ({
-                key: item.key,
-                icon: item.icon,
-                label: item.label,
-                onClick: onExportMenuClick
-            }))
-        };
-
-        return (
-            <>
-                <Row gutter={[8, 8]} style={{ flexGrow: 1 }} justify="space-between">
-                    <Col xxl={1} xl={12} lg={12} md={12} sm={12} xs={24}>
-                        <span className="table-header-text">Ürün Listesi</span>
-                    </Col>
-                    <Row gutter={[16, 16]} style={{ flexGrow: 1 }} justify="end">
-                        <Col>
-                            <Button type="default" icon={<ReloadOutlined />} onClick={() => onRefresh()}>Yenile</Button>
-                        </Col>
-                        <Col>
-                            <Button type="primary" icon={<PlusOutlined />} onClick={() => onAddProduct()}>
-                                Ürün Ekle
-                            </Button>
-                        </Col>
-                        {
-                            selectedRowKey ? <Col>
-                            <Button type="primary" danger icon={<DeleteFilled />} onClick={() => onDeleteProduct()}>
-                                Ürünü Sil
-                            </Button>
-                        </Col> : null
-                        }
-                        <Col>
-                            <Dropdown.Button menu={exportMenu} trigger={['hover']} block>
-                                Aktarım
-                            </Dropdown.Button>
-                        </Col>
-                    </Row>
-                </Row>
-                <Divider type="horizontal" size="small" />
-            </>
-        );
-    }
 
     useEffect(() => {
         if(loading){
             setTimeout(() => {
                 setLoading(prevState => !prevState);
-                setSelectedRowKey('');
+                setSelectedRowKeys([]);
             }, 1000);
         }
     },[loading]);
+
+
+
+const tableHeaderOptions = [
+            {
+                key: 'header-options-1',
+                title: 'Yenile',
+                type: 'default',
+                icon: <ReloadOutlined />,
+                onClick: () => onRefresh()
+            },
+            {
+                key: 'header-options-2',
+                title: 'Ürün Ekle',
+                type: 'primary',
+                icon: <PlusOutlined />,
+                onClick: () => onAddProduct()
+            },
+            {
+                key: 'header-options-3',
+                title: 'Ürünü Sil',
+                type: 'primary',
+                danger: true,
+                icon: <DeleteFilled />,
+                showWhenSelected: true,
+                onClick: () => onDeleteProduct()
+            },
+            {
+                key: 'header-options-4',
+                title: 'Aktarım',
+                type: 'default',
+                trigger: 'hover',
+                isDropdown: true,
+                dropdownOptions: [
+                    {
+                        key: 'e-1',
+                        label: 'Excel yükle',
+                        icon: <UploadOutlined />,
+                        onClick: () => onUploadExcel()
+                    },
+                    {
+                        key: 'e-2',
+                        label: 'Excel olarak indir',
+                        icon: <FileExcelOutlined />,
+                        onClick: () => onDownloadExcel()
+                    },
+                    {
+                        key: 'e-3',
+                        label: 'PDF olarak indir',
+                        icon: <FilePdfOutlined />,
+                        onClick: () => onDownloadPdf()
+                    }
+                ]
+            }
+];
+
     return (
         <Layout>
-            <Table
-                loading={loading}
-                scroll={{ x: 'max-content' }}
-                rowSelection={rowSelection}
-                bordered
-                pagination={{ hideOnSinglePage: true, showTotal: (total, range) => `${range[0]} / ${total}`, responsive: ['md'] }}
-                expandable={{ defaultExpandAllRows: true }}
+           <MobiTable
+                editableRows={false}
                 columns={columns}
-                dataSource={data}
-                rowHoverable
-                title={() => MenuHeader()}
+                data={tableData}
+                loading={loading}
+                rowSelection={rowSelection}
+                tableHeaderOptions={tableHeaderOptions}
+                tableHeaderTitle="Ürün Listesi"      
             />
             <UrunFiyatGuncelle
                 open={openAddModal}
                 setOpen={setOpenAddModal}
                 onFinish={onRefresh}
-                selectedData={data.filter(item => item.key == selectedRowKey)[0] || {}}
+                selectedData={data.filter(item => selectedRowKeys.includes(item.key))[0] || {}}
             />
         </Layout>
     );
